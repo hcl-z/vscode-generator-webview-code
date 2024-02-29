@@ -1,0 +1,13 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "editor.insertSpaces": true,
+    "files.eol": "\n",
+    "files.trimTrailingWhitespace": true,
+    "git.branchProtection": [
+        "main"
+    ],
+    "git.branchProtectionPrompt": "alwaysCommitToNewBranch",
+    "git.branchRandomName.enable": true,
+    "githubPullRequests.assignCreated": "${user}",
+    "githubPullRequests.defaultMergeMethod": "squash"
+}
