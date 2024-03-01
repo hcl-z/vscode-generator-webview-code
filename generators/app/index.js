@@ -1,6 +1,3 @@
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
 'use strict';
 
 import Generator from 'yeoman-generator';
@@ -9,20 +6,12 @@ import { fileURLToPath } from 'url';
 import * as path from 'path';
 import * as env from './env.js';
 import which from 'which';
-import colortheme from './generate-colortheme.js';
-import commandjs from './generate-command-js.js';
-import commandts from './generate-command-ts.js';
-import commandweb from './generate-command-web.js';
-import extensionpack from './generate-extensionpack.js';
-import keymap from './generate-keymap.js';
-import language from './generate-language.js';
-import localization from './generate-localization.js';
-import notebook from './generate-notebook-renderer.js';
-import snippets from './generate-snippets.js';
+import webviewjs from './generate-webview-js.js';
+import webviewts from './generate-webview-ts.js';
+import { copyTemplate } from './util.js';
 
 const extensionGenerators = [
-    commandts, commandjs, colortheme, language, snippets, keymap, extensionpack, localization,
-    commandweb, notebook
+    webviewjs, webviewts
 ]
 
 export default class extends Generator {
@@ -123,7 +112,7 @@ export default class extends Generator {
 
         this.extensionGenerator = extensionGenerators.find(g => g.id === this.extensionConfig.type);
         try {
-            await this.extensionGenerator.prompting(this, this.extensionConfig);
+            await this.extensionGenerator.prompt(this, this.extensionConfig);
         } catch (e) {
             console.log(e);
             this.abort = true;
@@ -143,10 +132,19 @@ export default class extends Generator {
         this.log();
         this.log(`Writing in ${this.destinationPath()}...`);
 
-        const currentFilename = fileURLToPath(import.meta.url);
-        this.sourceRoot(path.join(currentFilename, '../templates/' + this.extensionConfig.type));
 
-        return this.extensionGenerator.writing(this, this.extensionConfig);
+        // if (this.extensionConfig.template) {
+        //     this.copyTemplate(`frontEnd/template-${this.extensionConfig.template}`, this.destinationPath('webview'), this.extensionConfig);
+        // }
+
+        const webviewPath = this.templatePath(`frontEnd/template-${this.extensionConfig.template}`)
+        const vscodePath = this.templatePath(this.extensionConfig.type)
+        console.log(1235, vscodePath)
+        const writeConfig = this.extensionGenerator.getWriteConfig(this.extensionConfig);
+
+        copyTemplate(this, this.extensionConfig, vscodePath, writeConfig)
+        // this.extensionGenerator.write(this, this.extensionConfig);
+        // this.extensionGenerator.process(this, this.extensionConfig)
     }
 
     // Installation
