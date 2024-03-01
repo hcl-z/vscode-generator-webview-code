@@ -1,8 +1,3 @@
-
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
-
 import Generator from 'yeoman-generator';
 
 import * as validator from './validator.js';
@@ -182,3 +177,65 @@ export function askForWebpack(generator, extensionConfig) {
         extensionConfig.webpack = gitAnswer.webpack;
     });
 }
+
+
+const templateList = ['vue', 'react', 'solid', 'preact']
+/**
+* @param {Generator} generator
+* @param {Object} extensionConfig
+*/
+export function askForWebviewTemplate(generator, extensionConfig) {
+    const template = generator.options['Template'];
+    if (templateList.includes(template)) {
+        extensionConfig.template = template;
+        return Promise.resolve();
+    }
+
+    if (generator.options['quick']) {
+        extensionConfig.template = 'react';
+        return Promise.resolve();
+    }
+
+
+    return generator.prompt({
+        type: 'list',
+        name: 'template',
+        message: 'Which template to use?',
+        choices: templateList.map(t => {
+            return {
+                name: t,
+                value: t
+            }
+        })
+    }).then(templateChoice => {
+        extensionConfig.template = templateChoice.template;
+    });
+}
+
+
+/**
+* @param {Generator} generator
+* @param {Object} extensionConfig
+*/
+export function askForVscodeUI(generator, extensionConfig) {
+    let vscodeUIInit = generator.options['vscodeUIInit'];
+    if (typeof vscodeUIInit === 'boolean') {
+        extensionConfig.vscodeUIInit = Boolean(vscodeUIInit);
+        return Promise.resolve();
+    }
+    if (generator.options['quick']) {
+        extensionConfig.vscodeUIInit = true;
+        return Promise.resolve();
+    }
+
+    return generator.prompt({
+        type: 'confirm',
+        name: 'vscodeUIInit',
+        message: 'Initialize Vscode Webview UI Toolkit ?',
+        default: true
+    }).then(uiAnswer => {
+        extensionConfig.vscodeUIInit = uiAnswer.vscodeUIInit;
+    });
+}
+
+
