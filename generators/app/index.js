@@ -2,17 +2,19 @@
 
 import Generator from 'yeoman-generator';
 import yosay from 'yosay';
-import { fileURLToPath } from 'url';
 import * as path from 'path';
 import * as env from './env.js';
 import which from 'which';
 import webviewjs from './generate-webview-js.js';
 import webviewts from './generate-webview-ts.js';
-import { copyTemplate } from './util.js';
-
+import { copyTemplate } from './copy.js';
+import { askForExtensionDescription, askForExtensionDisplayName, askForExtensionId, askForVscodeUI, askForWebviewTemplate } from './prompts.js';
+import { read, readSync } from 'fs';
+import * as fs from 'fs';
 const extensionGenerators = [
     webviewjs, webviewts
 ]
+
 
 export default class extends Generator {
 
@@ -112,6 +114,11 @@ export default class extends Generator {
 
         this.extensionGenerator = extensionGenerators.find(g => g.id === this.extensionConfig.type);
         try {
+            await askForExtensionDisplayName(this, this.extensionConfig);
+            await askForExtensionId(this, this.extensionConfig);
+            await askForExtensionDescription(this, this.extensionConfig);
+            await askForWebviewTemplate(this, this.extensionConfig);
+            await askForVscodeUI(this, this.extensionConfig);
             await this.extensionGenerator.prompt(this, this.extensionConfig);
         } catch (e) {
             console.log(e);
@@ -120,7 +127,7 @@ export default class extends Generator {
 
     }
     // Write files
-    writing() {
+    async writing() {
         if (this.abort) {
             return;
         }
@@ -132,23 +139,27 @@ export default class extends Generator {
         this.log();
         this.log(`Writing in ${this.destinationPath()}...`);
 
+        const webviewPath = `frontEnd/template-${this.extensionConfig.template}${this.extensionGenerator.type === 'ts' ? '-ts' : ''}`
+        const vscodePath = this.extensionConfig.type
 
-        // if (this.extensionConfig.template) {
-        //     this.copyTemplate(`frontEnd/template-${this.extensionConfig.template}`, this.destinationPath('webview'), this.extensionConfig);
-        // }
-
-        const webviewPath = this.templatePath(`frontEnd/template-${this.extensionConfig.template}`)
-        const vscodePath = this.templatePath(this.extensionConfig.type)
-        console.log(1235, vscodePath)
         const writeConfig = this.extensionGenerator.getWriteConfig(this.extensionConfig);
 
-        copyTemplate(this, this.extensionConfig, vscodePath, writeConfig)
-        // this.extensionGenerator.write(this, this.extensionConfig);
-        // this.extensionGenerator.process(this, this.extensionConfig)
+        let webviewPkg = this.templatePath(`${webviewPath}/package.json`)
+        const pkg = JSON.parse((await fs.promises.readFile(webviewPkg)).toString())
+        this.extensionConfig.webviewPkg = pkg
+
+        copyTemplate(this, this.extensionConfig, vscodePath, '', writeConfig)
+        copyTemplate(this, this.extensionConfig, webviewPath, 'webview', { copyRoot: true, exclude: ['package.json'] })
+
+        this.packageJson.merge({
+            devDependencies: this.extensionConfig.webviewPkg.devDependencies,
+            dependencies: this.extensionConfig.webviewPkg.dependencies
+        })
+        return;
     }
 
     // Installation
-    install() {
+    async install() {
         if (this.abort) {
             // @ts-ignore
             this.env.options.skipInstall = true;

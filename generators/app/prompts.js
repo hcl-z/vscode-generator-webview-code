@@ -179,7 +179,18 @@ export function askForWebpack(generator, extensionConfig) {
 }
 
 
-const templateList = ['vue', 'react', 'solid', 'preact']
+const templateList = [
+    'react',
+    'vue',
+    'lit',
+    'preact',
+    'svelte',
+    'qwik',
+    'solid',
+    'svelte',
+    'vanilla',
+]
+
 /**
 * @param {Generator} generator
 * @param {Object} extensionConfig

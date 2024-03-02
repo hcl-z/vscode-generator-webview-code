@@ -9,16 +9,69 @@ export default {
     aliases: ['ts', 'webview-ts'],
     name: 'New Webview Extension (TypeScript)',
     insidersName: 'New Extension with Proposed API (TypeScript)',
+    type: 'ts',
+    getWriteConfig: (extensionConfig) => {
+        /**
+         * @type {Object} config
+         * @param {Array.<string|{from: string, to: string}>} [config.path] - 路径配置数组
+         * @param {Array.<string|{from: string, to: string}>} [config.templatePath] - 模板路径配置数组
+         * @param {Array<string>} [config.exclude] - 要排除的文件或文件夹
+         * @param {Boolean} [config.copyRoot]
+         */
+
+        const config = extensionConfig.webpack ? {
+            path: [
+                'vscode',
+                'test',
+                '.vscodeignore',
+                'CHANGELOG.md',
+                'vsc-extension-quickstart.md',
+                'jsconfig.json',
+                'extension.js',
+                '.eslintrc.json',
+            ],
+            templatePath: [
+                'README.md',
+                'CHANGELOG.md',
+                'package.json',
+                'jsconfig.json'
+            ]
+        } : {
+            path: [{ from: 'vscode-webpack/vscode', to: 'vscode' }],
+            templatePath: [
+                { from: 'vscode-webpack/package.json', to: 'package.json' },
+                { from: 'vscode-webpack/tsconfig.json', to: 'tsconfig.json' },
+                { from: 'vscode-webpack/.vscodeignore', to: '.vscodeignore' },
+                { from: 'vscode-webpack/webpack.config.js', to: 'webpack.config.ts' },
+                { from: 'vscode-webpack/vsc-extension-quickstart.md', to: 'vsc-extension-quickstart.md' }
+            ]
+        }
+
+        if (extensionConfig) {
+            config.templatePath.push({
+                from: 'gitignore',
+                to: '.gitignore'
+            })
+        }
+
+        config.path.push(...['src/test', '.vscode-test.mjs', '.eslintrc.json']);
+        config.templatePath.push(...['README.md', 'CHANGELOG.md', 'src/extension.ts']);
+
+        if (extensionConfig.pkgManager === 'yarn') {
+            config.path.push('.yarnrc');
+        } else if (extensionConfig.pkgManager === 'pnpm') {
+            config.path.push({
+                from: '.npmrc-pnpm',
+                to: '.npmrc'
+            })
+        }
+        return config;
+    },
     /**
      * @param {Generator} generator
      * @param {Object} extensionConfig
      */
     prompt: async (generator, extensionConfig) => {
-        await prompts.askForExtensionDisplayName(generator, extensionConfig);
-        await prompts.askForExtensionId(generator, extensionConfig);
-        await prompts.askForExtensionDescription(generator, extensionConfig);
-        await prompts.askForWebviewTemplate(generator, extensionConfig);
-        await prompts.askForVscodeUI(generator, extensionConfig);
         await prompts.askForGit(generator, extensionConfig);
         await prompts.askForWebpack(generator, extensionConfig);
         await prompts.askForPackageManager(generator, extensionConfig);
@@ -28,37 +81,6 @@ export default {
      * @param {Object} extensionConfig
      */
     write: (generator, extensionConfig) => {
-        if (extensionConfig.webpack) {
-            generator.fs.copy(generator.templatePath('vscode-webpack/vscode'), generator.destinationPath('.vscode'));
-            generator.fs.copyTpl(generator.templatePath('vscode-webpack/package.json'), generator.destinationPath('package.json'), extensionConfig);
-            generator.fs.copyTpl(generator.templatePath('vscode-webpack/tsconfig.json'), generator.destinationPath('tsconfig.json'), extensionConfig);
-            generator.fs.copyTpl(generator.templatePath('vscode-webpack/.vscodeignore'), generator.destinationPath('.vscodeignore'), extensionConfig);
-            generator.fs.copyTpl(generator.templatePath('vscode-webpack/webpack.config.js'), generator.destinationPath('webpack.config.js'), extensionConfig);
-            generator.fs.copyTpl(generator.templatePath('vscode-webpack/vsc-extension-quickstart.md'), generator.destinationPath('vsc-extension-quickstart.md'), extensionConfig);
-        } else {
-            generator.fs.copy(generator.templatePath('vscode'), generator.destinationPath('.vscode'));
-            generator.fs.copyTpl(generator.templatePath('package.json'), generator.destinationPath('package.json'), extensionConfig);
-            generator.fs.copyTpl(generator.templatePath('tsconfig.json'), generator.destinationPath('tsconfig.json'), extensionConfig);
-            generator.fs.copyTpl(generator.templatePath('.vscodeignore'), generator.destinationPath('.vscodeignore'), extensionConfig);
-            generator.fs.copyTpl(generator.templatePath('vsc-extension-quickstart.md'), generator.destinationPath('vsc-extension-quickstart.md'), extensionConfig);
-        }
-
-        if (extensionConfig.gitInit) {
-            generator.fs.copy(generator.templatePath('gitignore'), generator.destinationPath('.gitignore'));
-        }
-        generator.fs.copyTpl(generator.templatePath('README.md'), generator.destinationPath('README.md'), extensionConfig);
-        generator.fs.copyTpl(generator.templatePath('CHANGELOG.md'), generator.destinationPath('CHANGELOG.md'), extensionConfig);
-        generator.fs.copyTpl(generator.templatePath('src/extension.ts'), generator.destinationPath('src/extension.ts'), extensionConfig);
-        generator.fs.copy(generator.templatePath('src/test'), generator.destinationPath('src/test'));
-        generator.fs.copy(generator.templatePath('.vscode-test.mjs'), generator.destinationPath('.vscode-test.mjs'));
-        generator.fs.copy(generator.templatePath('.eslintrc.json'), generator.destinationPath('.eslintrc.json'));
-
-        if (extensionConfig.pkgManager === 'yarn') {
-            generator.fs.copyTpl(generator.templatePath('.yarnrc'), generator.destinationPath('.yarnrc'), extensionConfig);
-        } else if (extensionConfig.pkgManager === 'pnpm') {
-            generator.fs.copyTpl(generator.templatePath('.npmrc-pnpm'), generator.destinationPath('.npmrc'), extensionConfig);
-        }
-
         extensionConfig.installDependencies = true;
         extensionConfig.proposedAPI = extensionConfig.insiders;
     },

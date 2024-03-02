@@ -5,12 +5,17 @@ export default {
     id: 'ext-webview-js',
     aliases: ['js', 'webview-js'],
     name: 'New Webview Extension (JavaScript)',
+    type: 'js',
     /**
      * @param {Object} extensionConfig
      */
     getWriteConfig: (extensionConfig) => {
         /**
-         * @type {{path:Array<String|{from:String,to:String}>,templatePath:Array<String|{from:String,to:String}>}}
+         * @type {Object} config
+         * @param {Array.<string|{from: string, to: string}>} [config.path] - 路径配置数组
+         * @param {Array.<string|{from: string, to: string}>} [config.templatePath] - 模板路径配置数组
+         * @param {Array<string>} [config.exclude] - 要排除的文件或文件夹
+         * @param {Boolean} [config.copyRoot]
          */
         const config = {
             path: [
@@ -52,10 +57,6 @@ export default {
      * @param {Object} extensionConfig
      */
     prompt: async (generator, extensionConfig) => {
-        await prompts.askForExtensionDisplayName(generator, extensionConfig);
-        await prompts.askForExtensionId(generator, extensionConfig);
-        await prompts.askForExtensionDescription(generator, extensionConfig);
-        await prompts.askForWebviewTemplate(generator, extensionConfig);
         await prompts.askForVscodeUI(generator, extensionConfig);
         extensionConfig.checkJavaScript = false;
         await generator.prompt({
@@ -79,7 +80,6 @@ export default {
      * @param {String} pathConfig.templatePath
      */
     write: (generator, extensionConfig) => {
-
         extensionConfig.installDependencies = true;
     },
 
