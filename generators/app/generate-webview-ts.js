@@ -21,7 +21,7 @@ export default {
 
         const config = extensionConfig.webpack ? {
             path: [
-                'vscode',
+                { from: 'vscode', to: '.vscode' },
                 'test',
                 '.vscodeignore',
                 'CHANGELOG.md',
@@ -37,7 +37,7 @@ export default {
                 'jsconfig.json'
             ]
         } : {
-            path: [{ from: 'vscode-webpack/vscode', to: 'vscode' }],
+            path: [{ from: 'vscode-webpack/vscode', to: '.vscode' }],
             templatePath: [
                 { from: 'vscode-webpack/package.json', to: 'package.json' },
                 { from: 'vscode-webpack/tsconfig.json', to: 'tsconfig.json' },

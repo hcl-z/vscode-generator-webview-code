@@ -18,7 +18,24 @@
         "command": <%- JSON.stringify(`${name}.helloWorld`) %>,
         "title": "Hello World"
       }
-    ]
+    ],
+    "viewsContainers": {
+        "activitybar": [
+            {
+                "id": <%- JSON.stringify(`${name}.helloView`) %>,
+                "title": "helloView"
+            }
+        ]
+    },
+    "views": {
+            "trackView": [
+                {
+                    "id": <%- JSON.stringify(`${name}.helloView`) %>,
+                    "name": "helloView",
+                    "type": "webview"
+                }
+            ]
+        }
   },
   "scripts": {
     "vscode:prepublish": "<%= pkgManager %> run package",
