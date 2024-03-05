@@ -1,35 +1,56 @@
 {
-  "name": <%- JSON.stringify(name) %>,
-  "displayName": <%- JSON.stringify(displayName) %>,
-  "description": <%- JSON.stringify(description) %>,
-  "version": "0.0.1",
-  "engines": {
-    "vscode": <%- JSON.stringify(vsCodeEngine) %>
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./out/extension.js",<% if (insiders) { %>
+    "name": <%- JSON.stringify(name) %>,
+    "displayName": <%- JSON.stringify(displayName) %>,
+    "description": <%- JSON.stringify(description) %>,
+    "version": "0.0.1",
+    "engines": {
+        "vscode": <%- JSON.stringify(vsCodeEngine) %>
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [],
+    "main": "./out/extension.js",<% if (insiders) { %>
   "enabledApiProposals": [],<% } %>
   "contributes": {
-    "commands": [
-      {
-        "command": <%- JSON.stringify(`${name}.helloWorld`) %>,
-        "title": "Hello World"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "<%= pkgManager %> run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "<%= pkgManager %> run compile && <%= pkgManager %> run lint",
-    "lint": "eslint src --ext ts",
-    "test": "vscode-test"<% if (insiders) { %>,
-    "update-proposed-api": "vscode-dts dev"<% } %>
-  },
-  "devDependencies": {
+        "commands": [
+            {
+                "command": <%- JSON.stringify(`${name
+                }.helloWorld`) %>,
+                "title": "Hello World"
+            }
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "helloView",
+                    "title": "helloView",
+                    "icon":"resource/icon.svg"
+                }
+            ]
+        },
+        "views": {
+            "helloView": [
+                {
+                    "id": "helloView_one",
+                    "name": "helloView",
+                    "type": "webview"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "<%= pkgManager %> run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "<%= pkgManager %> run compile && <%= pkgManager %> run lint",
+        "lint": "eslint src --ext ts",
+        "test": "vscode-test"<% if (insiders) { %>,
+            "update-proposed-api": "vscode-dts dev"<%
+        } %>,
+        "dev":"cd webview & vite build --watch"
+    },
+    "devDependencies": {
     <%- dep("@types/vscode") %>,
     <%- dep("@types/mocha") %>,
     <%- dep("@types/node") %>,
@@ -39,6 +60,7 @@
     <%- dep("typescript") %>,
     <%- dep("@vscode/test-cli") %>,
     <%- dep("@vscode/test-electron") %><% if (insiders) { %>,
-    <%- dep("vscode-dts") %><% } %>
-  }
+    <%- dep("vscode-dts") %><%
+        } %>
+    }
 }

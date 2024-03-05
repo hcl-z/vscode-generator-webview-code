@@ -1,28 +1,51 @@
 {
-  "name": <%- JSON.stringify(name) %>,
-  "displayName": <%- JSON.stringify(displayName) %>,
-  "description": <%- JSON.stringify(description) %>,
-  "version": "0.0.1",
-  "engines": {
-    "vscode": <%- JSON.stringify(vsCodeEngine) %>
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [],
-  "main": "./extension.js",
-  "contributes": {
-    "commands": [{
-      "command": <%- JSON.stringify(`${name}.helloWorld`) %>,
-      "title": "Hello World"
-    }]
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "pretest": "<%= pkgManager %> run lint",
-    "test": "vscode-test"
-  },
-  "devDependencies": {
+    "name": <%- JSON.stringify(name) %>,
+    "displayName": <%- JSON.stringify(displayName) %>,
+    "description": <%- JSON.stringify(description) %>,
+    "version": "0.0.1",
+    "engines": {
+        "vscode": <%- JSON.stringify(vsCodeEngine) %>
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "*"
+    ],
+    "main": "./extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": <%- JSON.stringify(`${name}.helloWorld`) %>,
+                "title": "Hello World"
+            }
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": <%- JSON.stringify(`${name}.helloView`) %>,
+                    "title": "helloView",
+                    "icon":"resource/icon.svg"
+                }
+            ]
+        },
+        "views": {
+            "helloView": [
+                {
+                    "id": "helloView_one",
+                    "name": "helloView",
+                    "type": "webview"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "lint": "eslint .",
+        "pretest": "<%= pkgManager %> run lint",
+        "test": "vscode-test",
+        "dev":"cd webview & vite build --watch"
+    },
+    "devDependencies": {
     <%- dep("@types/vscode") %>,
     <%- dep("@types/mocha") %>,
     <%- dep("@types/node") %>,
@@ -30,5 +53,5 @@
     <%- dep("typescript") %>,
     <%- dep("@vscode/test-cli") %>,
     <%- dep("@vscode/test-electron") %>
-  }
+    }
 }

@@ -21,8 +21,8 @@ export default {
 
         const config = extensionConfig.webpack ? {
             path: [
-                'vscode',
-                'test',
+                { from: 'vscode', to: '.vscode' },
+                'resource',
                 '.vscodeignore',
                 'CHANGELOG.md',
                 'vsc-extension-quickstart.md',
@@ -37,13 +37,13 @@ export default {
                 'jsconfig.json'
             ]
         } : {
-            path: [{ from: 'vscode-webpack/vscode', to: 'vscode' }],
+            path: [{ from: 'vscode-webpack/vscode', to: '.vscode' }],
             templatePath: [
                 { from: 'vscode-webpack/package.json', to: 'package.json' },
                 { from: 'vscode-webpack/tsconfig.json', to: 'tsconfig.json' },
                 { from: 'vscode-webpack/.vscodeignore', to: '.vscodeignore' },
-                { from: 'vscode-webpack/webpack.config.js', to: 'webpack.config.ts' },
-                { from: 'vscode-webpack/vsc-extension-quickstart.md', to: 'vsc-extension-quickstart.md' }
+                { from: 'vscode-webpack/vsc-extension-quickstart.md', to: 'vsc-extension-quickstart.md' },
+                'vscode-webpack/webpack.config.js',
             ]
         }
 

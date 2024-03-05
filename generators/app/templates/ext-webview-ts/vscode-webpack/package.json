@@ -18,7 +18,25 @@
         "command": <%- JSON.stringify(`${name}.helloWorld`) %>,
         "title": "Hello World"
       }
-    ]
+    ],
+    "viewsContainers": {
+        "activitybar": [
+            {
+                "id": <%- JSON.stringify(`${name}.helloView`) %>,
+                "title": "helloView",
+                "icon":"resource/icon.svg"
+            }
+        ]
+    },
+    "views": {
+        "helloView": [
+            {
+                "id": "helloView_one",
+                "name": "helloView",
+                "type": "webview"
+            }
+        ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "<%= pkgManager %> run package",
@@ -30,7 +48,8 @@
     "pretest": "<%= pkgManager %> run compile-tests && <%= pkgManager %> run compile && <%= pkgManager %> run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test"<% if (insiders) { %>,
-    "update-proposed-api": "vscode-dts dev"<% } %>
+    "update-proposed-api": "vscode-dts dev"<% } %>,
+    "dev":"cd webview & vite build --watch"
   },
   "devDependencies": {
     <%- dep("@types/vscode") %>,

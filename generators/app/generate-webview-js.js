@@ -19,7 +19,8 @@ export default {
          */
         const config = {
             path: [
-                'vscode',
+                { from: 'vscode', to: '.vscode' },
+                'resource',
                 'test',
                 '.vscodeignore',
                 'CHANGELOG.md',
