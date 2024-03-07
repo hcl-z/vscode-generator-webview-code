@@ -23,7 +23,7 @@
         "viewsContainers": {
             "activitybar": [
                 {
-                    "id": <%- JSON.stringify(`${name}.helloView`) %>,
+                    "id": "helloView",
                     "title": "helloView",
                     "icon":"resource/icon.svg"
                 }
@@ -43,7 +43,7 @@
         "lint": "eslint .",
         "pretest": "<%= pkgManager %> run lint",
         "test": "vscode-test",
-        "dev":"cd webview & vite build --watch"
+        "dev":"cd webview && vite build --watch"
     },
     "devDependencies": {
     <%- dep("@types/vscode") %>,
@@ -52,6 +52,8 @@
     <%- dep("eslint") %>,
     <%- dep("typescript") %>,
     <%- dep("@vscode/test-cli") %>,
-    <%- dep("@vscode/test-electron") %>
+    <%- dep("@vscode/test-electron") %><% if (vscodeUIInit) { %>,
+    <%- dep("@vscode/webview-ui-toolkit") %><%
+        } %>
     }
 }

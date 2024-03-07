@@ -19,15 +19,12 @@ export default {
          * @param {Boolean} [config.copyRoot]
          */
 
-        const config = extensionConfig.webpack ? {
+        const config = !extensionConfig.webpack ? {
             path: [
                 { from: 'vscode', to: '.vscode' },
-                'resource',
                 '.vscodeignore',
                 'CHANGELOG.md',
                 'vsc-extension-quickstart.md',
-                'jsconfig.json',
-                'extension.js',
                 '.eslintrc.json',
             ],
             templatePath: [
@@ -43,7 +40,7 @@ export default {
                 { from: 'vscode-webpack/tsconfig.json', to: 'tsconfig.json' },
                 { from: 'vscode-webpack/.vscodeignore', to: '.vscodeignore' },
                 { from: 'vscode-webpack/vsc-extension-quickstart.md', to: 'vsc-extension-quickstart.md' },
-                'vscode-webpack/webpack.config.js',
+                { from: 'vscode-webpack/webpack.config.js', to: 'webpack.config.js' }
             ]
         }
 
@@ -54,7 +51,7 @@ export default {
             })
         }
 
-        config.path.push(...['src/test', '.vscode-test.mjs', '.eslintrc.json']);
+        config.path.push(...['resource', 'src/test', '.vscode-test.mjs', '.eslintrc.json']);
         config.templatePath.push(...['README.md', 'CHANGELOG.md', 'src/extension.ts']);
 
         if (extensionConfig.pkgManager === 'yarn') {

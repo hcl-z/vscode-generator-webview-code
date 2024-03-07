@@ -48,7 +48,7 @@
         "test": "vscode-test"<% if (insiders) { %>,
             "update-proposed-api": "vscode-dts dev"<%
         } %>,
-        "dev":"cd webview & vite build --watch"
+        "dev":"cd webview && vite build --watch"
     },
     "devDependencies": {
     <%- dep("@types/vscode") %>,
@@ -61,6 +61,9 @@
     <%- dep("@vscode/test-cli") %>,
     <%- dep("@vscode/test-electron") %><% if (insiders) { %>,
     <%- dep("vscode-dts") %><%
+        } %><% if (vscodeUIInit) { %>,
+    <%- dep("@vscode/webview-ui-toolkit") %><%
         } %>
+
     }
 }
