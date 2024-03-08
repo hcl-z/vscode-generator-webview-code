@@ -12,29 +12,10 @@
             "presentation": {
                 "reveal": "always"
             },
-        },
-		{
-			"type": "npm",
-            "label":"vscode",
-			"script": "watch",
-			"problemMatcher": "$ts-webpack-watch",
-			"isBackground": true,
-			"presentation": {
-				"reveal": "never",
-				"group": "watchers"
-			},
-		},
-        {
-			"label": "tasks: run",
-			"dependsOn": [
-				"vscode",
-				"vite"
-			],
-			"problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
-		}
+        }
 	]
 }

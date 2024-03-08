@@ -40,9 +40,9 @@ function activate(context) {
                     localResourceRoots: [context.extensionUri]
                 };
                 // The CSS file from the React build output
-                const stylesUri = getUri(webviewView.webview, this.context.extensionUri, ["webview", "build", "assets", "index.css"]);
+                const stylesUri = getUri(webviewView.webview, context.extensionUri, ["webview", "build", "assets", "index.css"]);
                 // The JS file from the React build output
-                const scriptUri = getUri(webviewView.webview, this.context.extensionUri, ["webview", "build", "assets", "index.js"]);
+                const scriptUri = getUri(webviewView.webview, context.extensionUri, ["webview", "build", "assets", "index.js"]);
                 // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
                 webviewView.webview.html = `
                     <!DOCTYPE html>
