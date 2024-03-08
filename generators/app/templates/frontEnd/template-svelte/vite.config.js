@@ -6,7 +6,7 @@ export default defineConfig({
     plugins: [svelte()],
     build: {
         outDir: "build",
-        watch: true,
+        assetsInlineLimit: Number.MAX_SAFE_INTEGER,
         rollupOptions: {
             output: {
                 entryFileNames: `assets/[name].js`,

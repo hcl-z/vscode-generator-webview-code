@@ -5,7 +5,7 @@ export default defineConfig({
     plugins: [solid()],
     build: {
         outDir: "build",
-        watch: true,
+        assetsInlineLimit: Number.MAX_SAFE_INTEGER,
         rollupOptions: {
             output: {
                 entryFileNames: `assets/[name].js`,
