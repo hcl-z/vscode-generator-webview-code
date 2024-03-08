@@ -22,7 +22,7 @@
     "viewsContainers": {
         "activitybar": [
             {
-                "id": <%- JSON.stringify(`${name}.helloView`) %>,
+                "id": "helloView",
                 "title": "helloView",
                 "icon":"resource/icon.svg"
             }

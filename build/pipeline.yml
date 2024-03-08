@@ -17,7 +17,7 @@ resources:
 
 parameters:
   - name: publishPackage
-    displayName: 🚀 Publish generator-code
+    displayName: 🚀 Publish generator-webview-code
     type: boolean
     default: false
 
@@ -25,7 +25,7 @@ extends:
   template: azure-pipelines/npm-package/pipeline.yml@templates
   parameters:
     npmPackages:
-      - name: generator-code
+      - name: generator-webview-code
 
         buildSteps:
           - script: npm i
@@ -55,6 +55,6 @@ extends:
           - script: npm test
             displayName: Test npm package
             env:
-              DISPLAY: ':99.0'
+              DISPLAY: ":99.0"
 
         publishPackage: ${{ parameters.publishPackage }}
