@@ -51,10 +51,10 @@ function activate(context) {
                         <meta charset="UTF-8" />
                         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                         <link rel="stylesheet" type="text/css" href="${stylesUri}">
-                        <script type="module" src="${scriptUri}"></script>
                         <script>
-                        const vscode = acquireVsCodeApi();
-                    </script>
+                            const vscode = acquireVsCodeApi();
+                        </script>
+                        <script type="module" src="${scriptUri}"></script>
                         <title>Hello World</title>
                         </head>
                         <body>

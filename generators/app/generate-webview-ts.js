@@ -51,7 +51,7 @@ export default {
             })
         }
 
-        config.path.push(...['resource', 'src/test', '.vscode-test.mjs', '.eslintrc.json']);
+        config.path.push(...['resource', 'src/test', '.vscode-test.mjs', '.eslintrc.json', 'global.d.ts']);
         config.templatePath.push(...['README.md', 'CHANGELOG.md', 'src/extension.ts']);
 
         if (extensionConfig.pkgManager === 'yarn') {

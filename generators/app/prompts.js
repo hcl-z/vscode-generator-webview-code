@@ -2,6 +2,7 @@ import Generator from 'yeoman-generator';
 
 import * as validator from './validator.js';
 import * as path from 'path';
+import { getLatestVSCodeVersion } from './env.js';
 
 /**
 * @param {Generator} generator
@@ -250,3 +251,45 @@ export function askForVscodeUI(generator, extensionConfig) {
 }
 
 
+
+/**
+* @param {Generator} generator
+* @param {Object} extensionConfig
+*/
+export async function askForVscodeVersion(generator, extensionConfig) {
+    const versionList = await getLatestVSCodeVersion(10)
+    let vscodeVersion = generator.options['version'];
+
+    extensionConfig.version = vscodeVersion || versionList[0];
+
+    if (generator.options['quick']) {
+        return Promise.resolve();
+    }
+
+    return generator.prompt({
+        type: 'list',
+        name: 'version',
+        message: 'Which vscode version to use?',
+        choices: versionList.map((v, index) => {
+            if (index === 0) {
+                return {
+                    name: `${v} (Lastest)`,
+                    value: v
+                }
+            }
+            else if (v === extensionConfig.localVersion) {
+                return {
+                    name: `${v} (Current)`,
+                    value: v
+                }
+            } else
+                return {
+                    name: v,
+                    value: v
+                }
+        }),
+        default: extensionConfig.localVersion
+    }).then(versionAnswer => {
+        extensionConfig.version = versionAnswer.version;
+    });
+}

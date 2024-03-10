@@ -8,7 +8,7 @@ import which from 'which';
 import webviewjs from './generate-webview-js.js';
 import webviewts from './generate-webview-ts.js';
 import { copyTemplate } from './copy.js';
-import { askForExtensionDescription, askForExtensionDisplayName, askForExtensionId, askForVscodeUI, askForWebviewTemplate } from './prompts.js';
+import { askForExtensionDescription, askForExtensionDisplayName, askForExtensionId, askForVscodeUI, askForVscodeVersion, askForWebviewTemplate } from './prompts.js';
 import { read, readSync } from 'fs';
 import * as fs from 'fs';
 const extensionGenerators = [
@@ -29,7 +29,6 @@ export default class extends Generator {
         this.option('open', { type: Boolean, alias: 'o', description: 'Open the generated extension in Visual Studio Code' });
         this.option('openInInsiders', { type: Boolean, alias: 'O', description: 'Open the generated extension in Visual Studio Code Insiders' });
 
-        this.option('extensionType', { type: String, alias: 't', description: extensionGenerators.slice(0, 6).map(e => e.aliases[0]).join(', ') + '...' });
         this.option('extensionDisplayName', { type: String, alias: 'n', description: 'Display name of the extension' });
         this.option('extensionId', { type: String, description: 'Id of the extension' });
         this.option('extensionDescription', { type: String, description: 'Description of the extension' });
@@ -55,6 +54,7 @@ export default class extends Generator {
             this.extensionConfig.insiders = true;
         }
 
+        env.getLocalVersion(this, this.extensionConfig)
         // Welcome
         if (!this.extensionConfig.insiders) {
             this.log(yosay('Welcome to the Visual Studio Code Extension generator!'));
@@ -68,52 +68,35 @@ export default class extends Generator {
             this.destinationRoot(folderPath);
         }
 
-        // evaluateEngineVersion
-        const dependencyVersions = await env.getDependencyVersions();
-        this.extensionConfig.dependencyVersions = dependencyVersions;
         this.extensionConfig.dep = function (name) {
-            const version = dependencyVersions[name];
+            const version = this.extensionConfig.dependencyVersions[name];
             if (typeof version === 'undefined') {
                 throw new Error(`Module ${name} is not listed in env.js`);
             }
             return `${JSON.stringify(name)}: ${JSON.stringify(version)}`;
         };
-        this.extensionConfig.vsCodeEngine = await env.getLatestVSCodeVersion();
     }
 
     async prompting() {
-
-        // Ask for extension type
-        const extensionType = this.options['extensionType'];
-        if (extensionType) {
-            const extensionTypeId = 'ext-' + extensionType;
-            const extensionGenerator = extensionGenerators.find(g => g.aliases.indexOf(extensionType) !== -1);
-            if (extensionGenerator) {
-                this.extensionConfig.type = extensionGenerator.id;
-            } else {
-                this.log("Invalid extension type: " + extensionType + '\nPossible types are: ' + extensionGenerators.map(g => g.aliases.join(', ')).join(', '));
-                this.abort = true;
+        const choices = [];
+        for (const g of extensionGenerators) {
+            const name = this.extensionConfig.insiders ? g.insidersName : g.name;
+            if (name) {
+                choices.push({ name, value: g.id })
             }
-        } else {
-            const choices = [];
-            for (const g of extensionGenerators) {
-                const name = this.extensionConfig.insiders ? g.insidersName : g.name;
-                if (name) {
-                    choices.push({ name, value: g.id })
-                }
-            }
-            this.extensionConfig.type = (await this.prompt({
-                type: 'list',
-                name: 'type',
-                message: 'What type of extension do you want to create?',
-                pageSize: choices.length,
-                choices,
-            })).type;
-
         }
+        this.extensionConfig.type = (await this.prompt({
+            type: 'list',
+            name: 'type',
+            message: 'What type of extension do you want to create?',
+            pageSize: choices.length,
+            choices,
+        })).type;
+
 
         this.extensionGenerator = extensionGenerators.find(g => g.id === this.extensionConfig.type);
         try {
+            await askForVscodeVersion(this, this.extensionConfig);
             await askForExtensionDisplayName(this, this.extensionConfig);
             await askForExtensionId(this, this.extensionConfig);
             await askForExtensionDescription(this, this.extensionConfig);
@@ -124,7 +107,9 @@ export default class extends Generator {
             console.log(e);
             this.abort = true;
         }
-
+        // evaluateVersion
+        const dependencyVersions = await env.getDependencyVersions({ '@types/vscode': this.extensionConfig.version });
+        this.extensionConfig.dependencyVersions = dependencyVersions;
     }
     // Write files
     async writing() {
