@@ -67,14 +67,6 @@ export default class extends Generator {
             const folderPath = path.resolve(this.destinationPath(), destination);
             this.destinationRoot(folderPath);
         }
-
-        this.extensionConfig.dep = function (name) {
-            const version = this.extensionConfig.dependencyVersions[name];
-            if (typeof version === 'undefined') {
-                throw new Error(`Module ${name} is not listed in env.js`);
-            }
-            return `${JSON.stringify(name)}: ${JSON.stringify(version)}`;
-        };
     }
 
     async prompting() {
@@ -110,6 +102,13 @@ export default class extends Generator {
         // evaluateVersion
         const dependencyVersions = await env.getDependencyVersions({ '@types/vscode': this.extensionConfig.version });
         this.extensionConfig.dependencyVersions = dependencyVersions;
+        this.extensionConfig.dep = function (name) {
+            const version = dependencyVersions[name];
+            if (typeof version === 'undefined') {
+                throw new Error(`Module ${name} is not listed in env.js`);
+            }
+            return `${JSON.stringify(name)}: ${JSON.stringify(version)}`;
+        };
     }
     // Write files
     async writing() {

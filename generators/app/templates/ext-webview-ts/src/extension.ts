@@ -41,23 +41,23 @@ export function activate(context: vscode.ExtensionContext) {
         console.log(stylesUri, scriptUri);
         // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
         webviewView.webview.html = `
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <link rel="stylesheet" type="text/css" href="${stylesUri}">
-          <script>
-           const vscode = acquireVsCodeApi();
-          </script>
-          <script type="module" src="${scriptUri}"></script>
-          <title>Hello World</title>
-        </head>
-        <body>
-          <div id="root"></div>
-        </body>
-      </html>
-    `;
+          <!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <link rel="stylesheet" type="text/css" href="${stylesUri}">
+              <script>
+              const vscode = acquireVsCodeApi();
+              </script>
+              <script type="module" src="${scriptUri}"></script>
+              <title>Hello World</title>
+            </head>
+            <body>
+              <div id="root"></div>
+            </body>
+          </html>
+        `;
       }
     }
   ));
