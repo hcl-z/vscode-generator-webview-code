@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
-
+const { readFileSync } = require('fs')
 function getUri(webview, extensionUri, pathList) {
     return webview.asWebviewUri(vscode.Uri.joinPath(extensionUri, ...pathList));
 }
@@ -39,29 +39,19 @@ function activate(context) {
                     enableScripts: true,
                     localResourceRoots: [context.extensionUri]
                 };
-                // The CSS file from the React build output
-                const stylesUri = getUri(webviewView.webview, context.extensionUri, ["webview", "build", "assets", "index.css"]);
-                // The JS file from the React build output
-                const scriptUri = getUri(webviewView.webview, context.extensionUri, ["webview", "build", "assets", "index.js"]);
+                const baseUri = getUri(webviewView.webview, context.extensionUri, ["webview", "dist"]);
+                const htmlUri = getUri(webviewView.webview, context.extensionUri, ["webview", "dist", "index.html"]);
+
+                // replace js and css path
+                const htmlContent = readFileSync(htmlUri.fsPath, 'utf-8').replace(/VSCODE_RUNTIME%(.*)%/g, `${baseUri}/$1`);
+
                 // Tip: Install the es6-string-html VS Code extension to enable code highlighting below
-                webviewView.webview.html = `
-                    <!DOCTYPE html>
-                    <html lang="en">
-                        <head>
-                        <meta charset="UTF-8" />
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                        <link rel="stylesheet" type="text/css" href="${stylesUri}">
-                        <script>
-                            const vscode = acquireVsCodeApi();
-                        </script>
-                        <script type="module" src="${scriptUri}"></script>
-                        <title>Hello World</title>
-                        </head>
-                        <body>
-                        <div id="root"></div>
-                        </body>
-                    </html>
-                    `;
+                webviewView.webview.html = htmlContent.replace('/* PreScript */', `
+                    const __getUrl=(url)=>{
+                        return '${baseUri}'+'/'+url
+                    }
+                    const vscode = acquireVsCodeApi();
+                `);
             }
         }
     ));

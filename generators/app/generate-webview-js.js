@@ -20,6 +20,7 @@ export default {
         const config = {
             path: [
                 { from: 'vscode', to: '.vscode' },
+                { from: 'plugin.js', to: 'webview/plugin.js' },
                 'resource',
                 'test',
                 '.vscodeignore',

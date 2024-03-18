@@ -4,18 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "vite",
             "type": "npm",
-            "script": "dev",
-            "problemMatcher": [],
-            "isBackground": true,
-            "presentation": {
-                "reveal": "always"
-            }
-        },
-        {
-            "type": "npm",
-            "label": "vscode",
             "script": "watch",
             "problemMatcher": "$ts-webpack-watch",
             "isBackground": true,
@@ -23,6 +12,10 @@
                 "reveal": "never",
                 "group": "watchers"
             },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         },
         {
             "type": "npm",
@@ -42,18 +35,6 @@
                 "npm: watch-tests"
             ],
             "problemMatcher": []
-        },
-        {
-            "label": "tasks: run",
-            "dependsOn": [
-                "npm:vscode",
-                "npm:vite"
-            ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
         }
     ]
 }

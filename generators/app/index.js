@@ -132,8 +132,8 @@ export default class extends Generator {
         const pkg = JSON.parse((await fs.promises.readFile(webviewPkg)).toString())
         this.extensionConfig.webviewPkg = pkg
 
-        copyTemplate(this, this.extensionConfig, vscodePath, '', writeConfig)
         copyTemplate(this, this.extensionConfig, webviewPath, 'webview', { copyRoot: true, exclude: ['package.json'] })
+        copyTemplate(this, this.extensionConfig, vscodePath, '', writeConfig)
 
         this.packageJson.merge({
             devDependencies: this.extensionConfig.webviewPkg.devDependencies,

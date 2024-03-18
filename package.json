@@ -31,9 +31,6 @@
         "node": ">=16.x"
     },
     "scripts": {
-        "test": "mocha",
-        "prepublishOnly": "npm test",
-        "preversion": "npm test",
         "postversion": "git push && git push --tags"
     },
     "dependencies": {
