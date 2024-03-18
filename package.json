@@ -1,6 +1,6 @@
 {
     "name": "generator-webview-code",
-    "version": "0.0.3",
+    "version": "0.0.5",
     "description": "Yeoman generator for Visual Studio Code extensions.",
     "keywords": [
         "yeoman-generator",
@@ -15,17 +15,17 @@
     "type": "module",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Microsoft/vscode-generator-code.git"
+        "url": "https://github.com/hcl-z/vscode-generator-webview-code"
     },
     "bugs": {
-        "url": "https://github.com/Microsoft/vscode-generator-code/issues"
+        "url": "https://github.com/hcl-z/vscode-generator-webview-code/issues"
     },
     "main": "./generators/app/index.js",
-    "homepage": "http://code.visualstudio.com",
+    "homepage": "https://github.com/hcl-z/vscode-generator-webview-code",
     "license": "MIT",
     "author": {
         "name": "VS Code Team",
-        "url": "https://github.com/Microsoft"
+        "url": "https://github.com/hcl-z"
     },
     "engines": {
         "node": ">=16.x"

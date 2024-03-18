@@ -14,7 +14,10 @@
             "request": "launch",
             "name": "yeoman code",
             "program": "${workspaceFolder}/node_modules/yeoman-environment/cli/index.js",
-            "args": [ "run", "code" ],
+            "args": [
+                "run",
+                "webview-code"
+            ],
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
