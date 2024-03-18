@@ -10,3 +10,4 @@
 /.azure-pipelines.yml
 /.dockerignore
 /Dockerfile
+/build
